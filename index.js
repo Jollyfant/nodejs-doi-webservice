@@ -105,7 +105,7 @@ const DOIWebservice = function(configuration, callback) {
         "statusCode": response.statusCode,
         "type": "HTTP Request",
         "msRequestTime": (Date.now() - initialized),
-        "nLatencies": requestedDOIs.length
+        "nDOIs": requestedDOIs.length
       }) + "\n");
     }.bind(this));
 
@@ -143,7 +143,7 @@ DOIWebservice.prototype.validateParameters = function(queryObject) {
      */
 
     // Network code may include year
-    const NETWORK_REGEXP = new RegExp(/^([0-9a-z_?*]{1,7},){0,}([0-9a-z_?*]{1,7})$/i)
+    const NETWORK_REGEXP = new RegExp(/^([0-9a-z_?*]{1,7},){0,}([0-9a-z_?*]{1,7})$/i);
 
     // Check individual parameters
     switch(key) {
@@ -267,6 +267,19 @@ DOIWebservice.prototype.updateDOIs = function() {
 
   }
 
+  function splitDOI(x) {
+
+    /* function splitDOI
+     * Removes the leading https://doi.org from the identifier
+     */
+
+    return {
+      "network": x.network,
+      "doi": url.parse(x.doi).pathname.replace(/^\/+/g, '')
+    }
+
+  }
+
   function parseEntry(x) {
 
     /* function parseEntry
@@ -302,7 +315,7 @@ DOIWebservice.prototype.updateDOIs = function() {
 
     // Parse the HTML response from the FDSN and get networks & DOIs
     if(data !== null) {
-      this.cachedDOIs = libxmljs.parseHtmlString(data).find(".//tr").slice(1).map(parseEntry).filter(DOIExists);
+      this.cachedDOIs = libxmljs.parseHtmlString(data).find(".//tr").slice(1).map(parseEntry).filter(DOIExists).map(splitDOI);
     }
 
     setTimeout(this.updateDOIs.bind(this), this.configuration.REFRESH_INTERVAL_MS);
