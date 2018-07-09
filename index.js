@@ -14,6 +14,7 @@
 
 const __VERSION__ = "1.0.0";
 
+// Import standard lib
 const fs = require("fs");
 const querystring = require("querystring");
 const http = require("http");
@@ -265,7 +266,7 @@ DOIWebservice.prototype.updateDOIs = function() {
 
     // Parse the HTML response from the FDSN and get networks & DOIs
     if(data !== null) {
-      this.cachedDOIs = data.split("\r\n").map(parseEntry);
+      this.cachedDOIs = data.split("\r\n").slice(0, -1).map(parseEntry);
     }
 
     // Queue for the next update
