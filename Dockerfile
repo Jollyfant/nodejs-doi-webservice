@@ -15,10 +15,6 @@ LABEL email="koymans@knmi.nl"
 # Set the work directory
 WORKDIR /usr/src/app
 
-# Copy the package json and install NPM dependencies (libxmljs)
-COPY package*.json ./
-RUN npm install
-
 # Copy the rest of the source
 COPY . .
 
