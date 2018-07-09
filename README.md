@@ -1,5 +1,7 @@
 # nodejs-doi-webservice
-Application that harvests DOI information per EIDA network code and exposes the information through an HTTP API.
+Application that harvests DOI information per EIDA network code and exposes the information through an HTTP API. Information is harvested from:
+
+    http://www.fdsn.org/networks/doi/
 
 ## Installation
 
@@ -33,5 +35,5 @@ The supported parameters are valid SEED stream identifiers. Multiple stream iden
 
     [{
         "network":"GE",
-        "doi":"https://doi.org/10.14470/TR560404"
+        "doi":"10.14470/TR560404"
     }]
