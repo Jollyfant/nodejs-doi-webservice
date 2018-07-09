@@ -3,10 +3,6 @@ Application that harvests DOI information per EIDA network code and exposes the 
 
     http://www.fdsn.org/networks/doi/
 
-## Installation
-
-    npm install
-
 ## Configuration
 Modify config.json to suit your needs.
 
