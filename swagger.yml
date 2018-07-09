@@ -1,0 +1,55 @@
+swagger: "2.0"
+info:
+  description: "HTTP API for querying seismic network digital object identifiers"
+  version: "1.0.0"
+  title: "EIDA DOI Webservice API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "koymans@knmi.nl"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+host: "127.0.0.1"
+basePath: "/"
+tags:
+- name: "doi"
+  description: "HTTP API for seismic network DOIs" 
+schemes:
+- "http"
+paths:
+  /:
+    get:
+      tags:
+      - "doi"
+      summary: "Get seismic network digital identifier"
+      description: "Entrypoint for finding DOIs associated with seismic networks registed with FDSN"
+      operationId: "getNetworkDOI"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "network"
+        in: "query"
+        description: "Network code of seismic network"
+        type: "array"
+        items:
+          type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/DOIObject"
+        400:
+          description: "Bad Request"
+definitions:
+  DOIObject:
+    type: "object"
+    required:
+    - "network"
+    - "doi"
+    properties:
+      network:
+        type: "string"
+      doi:
+        type: "string"
