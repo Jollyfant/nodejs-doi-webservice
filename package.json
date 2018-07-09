@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-seedlink-latencies",
+  "name": "nodejs-doi-webservice",
   "version": "1.0.0",
   "description": "NodeJS connector for pulling Seedlink latency information",
   "main": "index.js",
@@ -9,15 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jollyfant/nodejs-seedlink-latency-proxy.git"
+    "url": "git+https://github.com/Jollyfant/nodejs-doi-webservice.git"
   },
   "author": "Mathijs Koymans",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Jollyfant/nodejs-seedlink-latency-proxy/issues"
+    "url": "https://github.com/Jollyfant/nodejs-doi-webservice/issues"
   },
-  "homepage": "https://github.com/Jollyfant/nodejs-seedlink-latency-proxy#readme",
-  "dependencies": {
-    "libxmljs": "^0.18.7"
-  }
+  "homepage": "https://github.com/Jollyfant/nodejs-doi-webservice#readme"
 }

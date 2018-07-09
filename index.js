@@ -18,7 +18,6 @@ const fs = require("fs");
 const querystring = require("querystring");
 const http = require("http");
 const path = require("path");
-const libxmljs = require("libxmljs");
 const url = require("url");
 
 const DOIWebservice = function(configuration, callback) {
@@ -243,81 +242,33 @@ DOIWebservice.prototype.updateDOIs = function() {
    * Queries the FDSN for network DOIs and doi.org for json-ld
    */
 
-  function extractHREFAttribute(x) {
-
-    /* function extractHREFAttribute
-     * Takes href attribute from node using libxmljs
-     */
-
-    try {
-      return x.get("a").attr("href").value();
-    } catch(exception) {
-      return null;
-    }
-
-  }
-
-  function DOIExists(x) {
-
-    /* function DOIExists
-     * Returns true if doi attribute exists
-     */
-
-    return x.doi !== null;
-
-  }
-
-  function splitDOI(x) {
-
-    /* function splitDOI
-     * Removes the leading https://doi.org from the identifier
-     */
-
-    return {
-      "network": x.network,
-      "doi": url.parse(x.doi).pathname.replace(/^\/+/g, '')
-    }
-
-  }
-
   function parseEntry(x) {
 
     /* function parseEntry
      * Parses an entry in the FDSN DOI table
      */
 
-    function extractHREFAttribute(x) {
-
-      /* function extractHREFAttribute
-       * Extracts a HREF attribute from an XML node
-       */
-
-      try {
-        return x.get("a").attr("href").value();
-      } catch(exception) {
-        return null;
-      }
-
-    }
+    var [network, doi] = x.split(",");
 
     return {
-      "network": path.basename(extractHREFAttribute(x.find(".//td")[0])),
-      "doi": extractHREFAttribute(x.find(".//td")[5])
+      "network": network,
+      "doi": doi
     }
 
   }
 
   // HTML page to harvest information from 
-  const FDSN_DOI_URL = "http://www.fdsn.org/networks/?paginate=no";
+  const FDSN_DOI_URL = "http://www.fdsn.org/networks/doi/";
 
   // Harvest network & DOI information from the FDSN
   this.HTTPGETWrapper(FDSN_DOI_URL, function(data) {
 
     // Parse the HTML response from the FDSN and get networks & DOIs
     if(data !== null) {
-      this.cachedDOIs = libxmljs.parseHtmlString(data).find(".//tr").slice(1).map(parseEntry).filter(DOIExists).map(splitDOI);
+      this.cachedDOIs = data.split("\r\n").map(parseEntry);
     }
 
+    // Queue for the next update
     setTimeout(this.updateDOIs.bind(this), this.configuration.REFRESH_INTERVAL_MS);
 
   }.bind(this));
