@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Jollyfant/nodejs-doi-webservice/issues"
   },
-  "homepage": "https://github.com/Jollyfant/nodejs-doi-webservice#readme"
+  "homepage": "https://github.com/Jollyfant/nodejs-doi-webservice#readme",
+  "dependencies": {
+    "elasticsearch": "^15.1.1"
+  }
 }

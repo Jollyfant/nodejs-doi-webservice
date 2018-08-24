@@ -3,6 +3,6 @@
   "__DEBUG__": false,
   "__NAME__": "EIDA DOI Webservice",
   "HOST": "0.0.0.0",
-  "PORT": 8087,
+  "PORT": 8090,
   "REFRESH_INTERVAL_MS": 86000000
 }

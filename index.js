@@ -66,6 +66,27 @@ const DOIWebservice = function(configuration, callback) {
     // Handle each incoming request
     var uri = url.parse(request.url);
     var initialized = Date.now();
+    var requestedDOIs = new Array();
+
+    // Write information to logfile
+    response.on("finish", function() {
+
+      // Elasticsearch
+      var requestLog = {
+        "timestamp": new Date().toISOString(),
+        "method": request.method,
+        "query": uri.query,
+        "path": uri.pathname,
+        "client": request.headers["x-forwarded-for"] || request.connection.remoteAddress,
+        "agent": request.headers["user-agent"] || null,
+        "statusCode": response.statusCode,
+        "msRequestTime": (Date.now() - initialized),
+        "nDOIs": requestedDOIs.length
+      }
+
+      return this.logger.write(JSON.stringify(requestLog) + "\n");
+
+    }.bind(this));
 
     // Only root path is supported
     if(uri.pathname !== "/") {
@@ -92,22 +113,6 @@ const DOIWebservice = function(configuration, callback) {
     if(requestedDOIs.length === 0) {
       return HTTPError(response, 204);
     }
-
-    // Write information to logfile
-    response.on("finish", function() {
-      this.logger.write(JSON.stringify({
-        "timestamp": new Date().toISOString(),
-        "method": request.method,
-        "query": uri.query,
-        "path": uri.pathname,
-        "client": request.headers["x-forwarded-for"] || request.connection.remoteAddress,
-        "agent": request.headers["user-agent"] || null,
-        "statusCode": response.statusCode,
-        "type": "HTTP Request",
-        "msRequestTime": (Date.now() - initialized),
-        "nDOIs": requestedDOIs.length
-      }) + "\n");
-    }.bind(this));
 
     // Write 200 JSON
     response.writeHead(200, {"Content-Type": "application/json"});
@@ -304,6 +309,11 @@ DOIWebservice.prototype.HTTPGETWrapper = function(HTTPRequest, callback) {
       callback(Buffer.concat(chunks).toString());
     });
 
+  }.bind(this));
+
+  // Retry in 60 seconds
+  request.on("error", function(error) {
+    setTimeout(this.updateDOIs.bind(this), 60000);
   }.bind(this));
 
   // End the request
